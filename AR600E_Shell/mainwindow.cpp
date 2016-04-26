@@ -252,7 +252,7 @@ void MainWindow::on_stopSolveButton_clicked()
     ui->stopSolveButton->setEnabled(false);
     ui->runSolveButton->setEnabled(true);
 
-    isStop = 1;
+    isStop = 2;
     writeToFile();
     command[0] = '2';
     sender->writeDatagram(command, 1, mHost, mPort);
