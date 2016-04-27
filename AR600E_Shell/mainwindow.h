@@ -33,7 +33,7 @@ private:
     QUdpSocket* sender;
     char command[1];
     void resetControl();
-    void init();
+    void initParams();
     void initParamTable();
 
 private slots:

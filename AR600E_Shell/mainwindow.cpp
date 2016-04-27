@@ -15,10 +15,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stdMoves->setEnabled(false);
     //ui->accGroup->setEnabled(false);
     //ui->angAccGroup->setEnabled(false);
+    ui->pauseSolveButton->setEnabled(false);
     ui->stopSolveButton->setEnabled(false);
     ui->v1Button->setChecked(true);
+    ui->saveParamButton->setEnabled(false);
 
-    init();
+    initParams();
     initParamTable();
 }
 
@@ -27,7 +29,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::init()
+void MainWindow::initParams()
 {
     acc = 0; angAcc = 0;
     vmax = 0.017;
@@ -43,13 +45,13 @@ void MainWindow::init()
 void MainWindow::writeToFile()
 {
     QString control;
-    control += QString::number(acc,'f',4) + "\n" + QString::number(vmax, 'f', 2); // + " " + QString::number(angAcc,'g',4);
-    control += "\n" + QString::number(isStop);
-    control += "\n" + QString::number(hs,'f',2) + "\n" + QString::number(h,'f',2) + "\n" + QString::number(ts,'f',2);
-    control += "\n" + QString::number(cx,'f',6) + "\n" + QString::number(cy,'f',6) + "\n" + QString::number(cx1,'f',6) + "\n" + QString::number(cy1,'f',6);
-    control += "\n" + QString::number(cux,'f',6) + "\n" + QString::number(cuy,'f',6) + "\n" + QString::number(cux1,'f',6) + "\n" + QString::number(cuy1,'f',6);
-    control += "\n" + QString::number(tdin,'f',2) + "\n" + QString::number(tdin2,'f',2);
-    control += "\n" + QString::number(dx,'f',6) + "\n" + QString::number(dy,'f',6) + "\n" + QString::number(dx1,'f',6) + "\n" + QString::number(dy1,'f',6);
+    control += QString::number(acc,'f',4) + "\r\n" + QString::number(vmax, 'f', 2); // + " " + QString::number(angAcc,'g',4);
+    control += "\r\n" + QString::number(isStop);
+    control += "\r\n" + QString::number(hs,'f',2) + "\r\n" + QString::number(h,'f',2) + "\r\n" + QString::number(ts,'f',2);
+    control += "\r\n" + QString::number(cx,'f',6) + "\r\n" + QString::number(cy,'f',6) + "\r\n" + QString::number(cx1,'f',6) + "\r\n" + QString::number(cy1,'f',6);
+    control += "\r\n" + QString::number(cux,'f',6) + "\r\n" + QString::number(cuy,'f',6) + "\r\n" + QString::number(cux1,'f',6) + "\r\n" + QString::number(cuy1,'f',6);
+    control += "\r\n" + QString::number(tdin,'f',2) + "\r\n" + QString::number(tdin2,'f',2);
+    control += "\r\n" + QString::number(dx,'f',6) + "\r\n" + QString::number(dy,'f',6) + "\r\n" + QString::number(dx1,'f',6) + "\r\n" + QString::number(dy1,'f',6);
 
     command[0] = '0';
     sender->writeDatagram(command, 1, mHost, mPort);
@@ -102,13 +104,21 @@ void MainWindow::on_paramCheckBox_clicked(bool checked)
     ui->parametersBox->setEnabled(!checked);
     if(checked)
     {
-        hs = 0.1;
-        h = 0.2;
-        ts = 5.0;
-        K = 1200;
+        hs = 0.1; h = 0.2; ts = 5.0;
+        cx = -0.00002; cy = 0.00002; cx1 = 0.00002; cy1 = -0.00002;
+        cux = 0.00005; cuy = 0.000025; cux1 = 0.00012; cuy1 = -0.00008;
+        tdin = 0; tdin2 = 0;
+        dx = 0; dy = 0; dx1 = 0; dy1 = 0;
+        K = 1200;        
         I = 1;
         //записать в файл параметры по умолчанию
         writeToFile();
+
+        ui->hsBox->setValue(hs); ui->hBox->setValue(h); ui->tsBox->setValue(ts);
+        ui->cxBox->setValue(cx); ui->cyBox->setValue(cy); ui->cx1Box->setValue(cx1); ui->cy1Box->setValue(cy1);
+        ui->cuxBox->setValue(cux); ui->cuyBox->setValue(cuy); ui->cux1Box->setValue(cux1); ui->cuy1Box->setValue(cuy1);
+        ui->tdinBox->setValue(tdin); ui->tdin2Box->setValue(tdin2);
+        ui->dxBox->setValue(dx); ui->dyBox->setValue(dy); ui->dx1Box->setValue(dx1); ui->dy1Box->setValue(dy1);
     }
 }
 
@@ -236,6 +246,7 @@ void MainWindow::on_runSolveButton_clicked()
     ui->angAccGroup->setEnabled(true);
     ui->stopSolveButton->setEnabled(true);
     ui->runSolveButton->setEnabled(false);
+    ui->pauseSolveButton->setEnabled(true);
 
     writeToFile();
     command[0] = '1';
@@ -251,6 +262,7 @@ void MainWindow::on_stopSolveButton_clicked()
     ui->angAccGroup->setEnabled(false);
     ui->stopSolveButton->setEnabled(false);
     ui->runSolveButton->setEnabled(true);
+    ui->pauseSolveButton->setEnabled(false);
 
     isStop = 2;
     writeToFile();
