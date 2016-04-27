@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pauseSolveButton->setEnabled(false);
     ui->stopSolveButton->setEnabled(false);
     ui->v1Button->setChecked(true);
-    ui->saveParamButton->setEnabled(false);
+    //ui->saveParamButton->setEnabled(false);
 
     initParams();
     initParamTable();
@@ -33,20 +33,20 @@ void MainWindow::initParams()
 {
     acc = 0; angAcc = 0;
     vmax = 0.017;
-    isStop = 0;
+    statePlay = 0;
     hs = 0.1; h = 0.2; ts = 5.0;
     cx = -0.00002; cy = 0.00002; cx1 = 0.00002; cy1 = -0.00002;
     cux = 0.00005; cuy = 0.000025; cux1 = 0.00012; cuy1 = -0.00008;
-    tdin = 0; tdin2 = 0;
+    tdin = 0.4; tdin2 = 0.4;
     dx = 0; dy = 0; dx1 = 0; dy1 = 0;
-    K = 1200; I = 1;
+    PGate = 1200; IGate = 1;
 }
 
 void MainWindow::writeToFile()
 {
     QString control;
-    control += QString::number(acc,'f',4) + "\r\n" + QString::number(vmax, 'f', 2); // + " " + QString::number(angAcc,'g',4);
-    control += "\r\n" + QString::number(isStop);
+    control += QString::number(acc,'f',4) + " " + QString::number(vmax, 'f', 3); // + " " + QString::number(angAcc,'g',4);
+    control += " " + QString::number(statePlay) + " 1";
     control += "\r\n" + QString::number(hs,'f',2) + "\r\n" + QString::number(h,'f',2) + "\r\n" + QString::number(ts,'f',2);
     control += "\r\n" + QString::number(cx,'f',6) + "\r\n" + QString::number(cy,'f',6) + "\r\n" + QString::number(cx1,'f',6) + "\r\n" + QString::number(cy1,'f',6);
     control += "\r\n" + QString::number(cux,'f',6) + "\r\n" + QString::number(cuy,'f',6) + "\r\n" + QString::number(cux1,'f',6) + "\r\n" + QString::number(cuy1,'f',6);
@@ -107,10 +107,10 @@ void MainWindow::on_paramCheckBox_clicked(bool checked)
         hs = 0.1; h = 0.2; ts = 5.0;
         cx = -0.00002; cy = 0.00002; cx1 = 0.00002; cy1 = -0.00002;
         cux = 0.00005; cuy = 0.000025; cux1 = 0.00012; cuy1 = -0.00008;
-        tdin = 0; tdin2 = 0;
+        tdin = 0.4; tdin2 = 0.4;
         dx = 0; dy = 0; dx1 = 0; dy1 = 0;
-        K = 1200;        
-        I = 1;
+        PGate = 1200;
+        IGate = 1;
         //записать в файл параметры по умолчанию
         writeToFile();
 
@@ -164,8 +164,24 @@ void MainWindow::on_saveParamButton_clicked()
     hs = ui->hsBox->value();
     h = ui->hBox->value();
     ts = ui->tsBox->value();
-    K = ui->KBox->value();
-    I = ui->IBox->value();
+
+    cx = ui->cxBox->value();
+    cy = ui->cyBox->value();
+    cx1 = ui->cx1Box->value();
+    cy1 = ui->cy1Box->value();
+    cux = ui->cuxBox->value();
+    cuy = ui->cuyBox->value();
+    cux1 = ui->cux1Box->value();
+    cuy1 = ui->cuy1Box->value();
+    dx = ui->dxBox->value();
+    dy = ui->dyBox->value();
+    dx1 = ui->dx1Box->value();
+    dy1 = ui->dy1Box->value();
+    tdin = ui->tdinBox->value();
+    tdin = ui->tdinBox->value();
+
+    PGate = ui->KBox->value();
+    IGate = ui->IBox->value();
     writeToFile();
 }
 
@@ -239,7 +255,7 @@ void MainWindow::on_startButton_clicked()
 void MainWindow::on_runSolveButton_clicked()
 {
     //acc = 1;
-    isStop = 0;
+    statePlay = 0;
     resetControl();
 
     ui->accGroup->setEnabled(true);
@@ -250,10 +266,7 @@ void MainWindow::on_runSolveButton_clicked()
 
     writeToFile();
     command[0] = '1';
-    //QByteArray datagram;
-    //datagram.fromRawData(command, sizeof(command));
     sender->writeDatagram(command, 1, mHost, mPort);
-    //sender->writeDatagram(datagram,mHost,mPort);
 }
 
 void MainWindow::on_stopSolveButton_clicked()
@@ -264,11 +277,13 @@ void MainWindow::on_stopSolveButton_clicked()
     ui->runSolveButton->setEnabled(true);
     ui->pauseSolveButton->setEnabled(false);
 
-    isStop = 2;
+    statePlay = 2;
     writeToFile();
     command[0] = '2';
     sender->writeDatagram(command, 1, mHost, mPort);
-    //записать файл?
+    Sleep(500);
+    statePlay = 0;
+    writeToFile();
 }
 
 void MainWindow::on_manStdCheckBox_clicked(bool checked)
@@ -322,110 +337,125 @@ void MainWindow::on_rebootButton_clicked()
 void MainWindow::on_hsBox_valueChanged(double arg1)
 {
     hs = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_hBox_valueChanged(double arg1)
 {
     h = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_tsBox_valueChanged(double arg1)
 {
     ts = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_cxBox_valueChanged(double arg1)
 {
     cx = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_cyBox_valueChanged(double arg1)
 {
     cy = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_cx1Box_valueChanged(double arg1)
 {
     cx1 = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_cy1Box_valueChanged(double arg1)
 {
     cy1 = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_cuxBox_valueChanged(double arg1)
 {
     cux = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_cuyBox_valueChanged(double arg1)
 {
     cuy = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_cux1Box_valueChanged(double arg1)
 {
     cux1 = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_cuy1Box_valueChanged(double arg1)
 {
     cuy1 = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_tdinBox_valueChanged(double arg1)
 {
     tdin = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_tdin2Box_valueChanged(double arg1)
 {
     tdin2 = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_dxBox_valueChanged(double arg1)
 {
     dx = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_dyBox_valueChanged(double arg1)
 {
     dy = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_dx1Box_valueChanged(double arg1)
 {
     dx1 = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_dy1Box_valueChanged(double arg1)
 {
     dy1 = arg1;
-    writeToFile();
+    //writeToFile();
 }
 
 void MainWindow::on_pauseSolveButton_clicked()
 {
-    if(isStop == 0)
-        isStop = 1;
+    if(statePlay == 0)
+        statePlay = 1;
     else
-        isStop = 0;
+        statePlay = 0;
+    writeToFile();
+}
+
+void MainWindow::on_resetParamsButton_clicked()
+{
+    hs = 0; h = 0; ts = 0;
+    cx = 0; cy = 0; cx1 = 0; cy1 = 0;
+    cux = 0; cuy = 0; cux1 = 0; cuy1 = 0;
+    tdin = 0; tdin2 = 0;
+    dx = 0; dy = 0; dx1 = 0; dy1 = 0;
+    ui->hsBox->setValue(hs); ui->hBox->setValue(h); ui->tsBox->setValue(ts);
+    ui->cxBox->setValue(cx); ui->cyBox->setValue(cy); ui->cx1Box->setValue(cx1); ui->cy1Box->setValue(cy1);
+    ui->cuxBox->setValue(cux); ui->cuyBox->setValue(cuy); ui->cux1Box->setValue(cux1); ui->cuy1Box->setValue(cuy1);
+    ui->tdinBox->setValue(tdin); ui->tdin2Box->setValue(tdin2);
+    ui->dxBox->setValue(dx); ui->dyBox->setValue(dy); ui->dx1Box->setValue(dx1); ui->dy1Box->setValue(dy1);
     writeToFile();
 }

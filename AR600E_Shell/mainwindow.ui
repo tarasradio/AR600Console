@@ -873,7 +873,7 @@
          <double>0.100000000000000</double>
         </property>
         <property name="value">
-         <double>0.000000000000000</double>
+         <double>0.400000000000000</double>
         </property>
        </widget>
        <widget class="QDoubleSpinBox" name="tdinBox">
@@ -895,7 +895,7 @@
          <double>0.100000000000000</double>
         </property>
         <property name="value">
-         <double>0.000000000000000</double>
+         <double>0.400000000000000</double>
         </property>
        </widget>
        <widget class="QLabel" name="label_26">
@@ -929,13 +929,26 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>140</y>
+         <y>170</y>
          <width>122</width>
          <height>23</height>
         </rect>
        </property>
        <property name="text">
         <string>Сохранить параметры</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="resetParamsButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>140</y>
+         <width>121</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Сбросить в ноль</string>
        </property>
       </widget>
      </widget>

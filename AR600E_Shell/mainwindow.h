@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFile>
 #include <QUdpSocket>
+#include <windows.h>
 
 #define mHost QHostAddress::LocalHost
 #define mPort 55555
@@ -24,11 +25,11 @@ private:
     Ui::MainWindow *ui;
     double acc, angAcc;
     double vmax;
-    int isStop;
+    int statePlay;
     double hs, h, ts;
     double cx, cy, cx1, cy1, cux, cuy, cux1, cuy1;
     double tdin, tdin2, dx, dy, dx1, dy1;
-    int K, I;
+    int PGate, IGate;
     void writeToFile();
     QUdpSocket* sender;
     char command[1];
@@ -76,6 +77,7 @@ private slots:
     void on_dx1Box_valueChanged(double arg1);
     void on_dy1Box_valueChanged(double arg1);
     void on_pauseSolveButton_clicked();
+    void on_resetParamsButton_clicked();
 };
 
 
