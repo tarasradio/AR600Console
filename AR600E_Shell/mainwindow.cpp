@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initParams();
     initParamTable();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -36,10 +38,24 @@ void MainWindow::initParams()
     statePlay = 0;
     hs = 0.1; h = 0.2; ts = 5.0;
     cx = -0.00002; cy = 0.00002; cx1 = 0.00002; cy1 = -0.00002;
-    cux = 0.00005; cuy = 0.000025; cux1 = 0.00012; cuy1 = -0.00008;
+    cux = 0.00005; cuy = -0.000025; cux1 = 0.00005; cuy1 = 0.00002;
     tdin = 0.4; tdin2 = 0.4;
     dx = 0; dy = 0; dx1 = 0; dy1 = 0;
     PGate = 1200; IGate = 1;
+    ui->cxBox->setToolTip("cx - коэффициент обратной связи по продольному смещению центра масс относительно левой ноги в фазе опоры	+-0.00004	номинальное значение -0.00002");
+    ui->cyBox->setToolTip("cy - коэффициент обратной связи по поперечному смещению центра масс относительно левой ноги в фазе опоры	+-0.00008	номинальное значение +0.00002");
+    ui->cx1Box->setToolTip("cx1 - коэффициент обратной связи по продольному смещению центра масс относительно правой ноги в фазе опоры	+-0.00004	номинальное значение +0.00002");
+    ui->cy1Box->setToolTip("cy1 - коэффициент обратной связи по поперечному смещению центра масс относительно правой ноги в фазе опоры	+-0.00008	номинальное значение -0.00002");
+    ui->cuxBox->setToolTip("cux - коэффициент обратной связи по поперечной реакции левой стопы, влияет (изменяет) продольный угол стопы	+-0.00005	номинальное значение +0.00005");
+    ui->cuyBox->setToolTip("cuy - коэффициент обратной связи по продольной реакции левой стопы, влияет (изменяет) продольный угол стопы	+-0.00003	номинальное значение -0.000025");
+    ui->cux1Box->setToolTip("cux1 - коэффициент обратной связи по поперечной реакции правой стопы, влияет (изменяет) продольный угол стопы	+-0.00012	номинальное значение +0.00005");
+    ui->cuy1Box->setToolTip("cuy1 - коэффициент обратной связи по продольной реакции правой стопы, влияет (изменяет) продольный угол стопы	+-0.00008	номинальное значение +0.00002");
+    ui->tdinBox->setToolTip("tdin - опережение-задержка времени начала переноса центра масс с одной ноги на другую (левая нога)		0 - 10-20% от периода шага	номинальное 0.4");
+    ui->tdin2Box->setToolTip("tdin2 - опережение-задержка времени начала переноса центра масс с одной ноги на другую (левая нога)		0 - 10-20% от периода шага	номинальное 0.4");
+    ui->dxBox->setToolTip("dx - постоянное продольное смещение центра масс относительно левой стопы в  фазе опоры				+-0.00001	номинальное значение 0");
+    ui->dyBox->setToolTip("");
+    ui->dx1Box->setToolTip("");
+    ui->dy1Box->setToolTip("");
 }
 
 void MainWindow::writeToFile()
@@ -104,21 +120,27 @@ void MainWindow::on_paramCheckBox_clicked(bool checked)
     ui->parametersBox->setEnabled(!checked);
     if(checked)
     {
-        hs = 0.1; h = 0.2; ts = 5.0;
-        cx = -0.00002; cy = 0.00002; cx1 = 0.00002; cy1 = -0.00002;
-        cux = 0.00005; cuy = 0.000025; cux1 = 0.00012; cuy1 = -0.00008;
-        tdin = 0.4; tdin2 = 0.4;
-        dx = 0; dy = 0; dx1 = 0; dy1 = 0;
-        PGate = 1200;
-        IGate = 1;
-        //записать в файл параметры по умолчанию
-        writeToFile();
+        if(ui->paramSlider->value() != 10)
+            ui->paramSlider->setValue(10);
+        else
+        {
+        //hs = 0.1; h = 0.2; ts = 5.0;
+            cx = -0.00002; cy = 0.00002; cx1 = 0.00002; cy1 = -0.00002;
+            cux = 0.00005; cuy = -0.000025; cux1 = 0.00005; cuy1 = 0.00002;
+            tdin = 0.4; tdin2 = 0.4;
+            dx = 0; dy = 0; dx1 = 0; dy1 = 0;
+            PGate = 1200;
+            IGate = 1;
+            //записать в файл параметры по умолчанию
+            writeToFile();
 
-        ui->hsBox->setValue(hs); ui->hBox->setValue(h); ui->tsBox->setValue(ts);
-        ui->cxBox->setValue(cx); ui->cyBox->setValue(cy); ui->cx1Box->setValue(cx1); ui->cy1Box->setValue(cy1);
-        ui->cuxBox->setValue(cux); ui->cuyBox->setValue(cuy); ui->cux1Box->setValue(cux1); ui->cuy1Box->setValue(cuy1);
-        ui->tdinBox->setValue(tdin); ui->tdin2Box->setValue(tdin2);
-        ui->dxBox->setValue(dx); ui->dyBox->setValue(dy); ui->dx1Box->setValue(dx1); ui->dy1Box->setValue(dy1);
+            ui->hsBox->setValue(hs); ui->hBox->setValue(h); ui->tsBox->setValue(ts);
+
+            ui->cxBox->setValue(cx); ui->cyBox->setValue(cy); ui->cx1Box->setValue(cx1); ui->cy1Box->setValue(cy1);
+            ui->cuxBox->setValue(cux); ui->cuyBox->setValue(cuy); ui->cux1Box->setValue(cux1); ui->cuy1Box->setValue(cuy1);
+            ui->tdinBox->setValue(tdin); ui->tdin2Box->setValue(tdin2);
+            ui->dxBox->setValue(dx); ui->dyBox->setValue(dy); ui->dx1Box->setValue(dx1); ui->dy1Box->setValue(dy1);
+        }
     }
 }
 
@@ -447,15 +469,44 @@ void MainWindow::on_pauseSolveButton_clicked()
 
 void MainWindow::on_resetParamsButton_clicked()
 {
-    hs = 0; h = 0; ts = 0;
-    cx = 0; cy = 0; cx1 = 0; cy1 = 0;
-    cux = 0; cuy = 0; cux1 = 0; cuy1 = 0;
-    tdin = 0; tdin2 = 0;
-    dx = 0; dy = 0; dx1 = 0; dy1 = 0;
+    if(ui->paramSlider->value() != 0)
+        ui->paramSlider->setValue(0);
+    else
+    {
+        //writeToFile();
+
+        //hs = 0; h = 0; ts = 0;
+        cx = 0; cy = 0; cx1 = 0; cy1 = 0;
+        cux = 0; cuy = 0; cux1 = 0; cuy1 = 0;
+        tdin = 0; tdin2 = 0;
+        dx = 0; dy = 0; dx1 = 0; dy1 = 0;
+        ui->hsBox->setValue(hs); ui->hBox->setValue(h); ui->tsBox->setValue(ts);
+        ui->cxBox->setValue(cx); ui->cyBox->setValue(cy); ui->cx1Box->setValue(cx1); ui->cy1Box->setValue(cy1);
+        ui->cuxBox->setValue(cux); ui->cuyBox->setValue(cuy); ui->cux1Box->setValue(cux1); ui->cuy1Box->setValue(cuy1);
+        ui->tdinBox->setValue(tdin); ui->tdin2Box->setValue(tdin2);
+        ui->dxBox->setValue(dx); ui->dyBox->setValue(dy); ui->dx1Box->setValue(dx1); ui->dy1Box->setValue(dy1);
+        writeToFile();
+    }
+
+}
+
+void MainWindow::on_paramSlider_valueChanged(int value)
+{
+    double k = (float)value/10;
+    /*cx = cx*k; cy = cy*k; cx1 = cx1*k; cy1 = cy1*k;
+    cux = cux*k; cuy = cuy*k; cux1 = cux1*k; cuy1 = cuy1*k;
+    tdin = tdin*k; tdin2 = tdin2*k;
+    dx = dx*k; dy = dy*k; dx1 = dx1*k; dy1 = dy1*k;*/
+    cx = -0.00002*k; cy = 0.00002*k; cx1 = 0.00002*k; cy1 = -0.00002*k;
+    cux = 0.00005*k; cuy = -0.000025*k; cux1 = 0.00005*k; cuy1 = 0.00002*k;
+    tdin = 0.4*k; tdin2 = 0.4*k;
+    dx = 0*k; dy = 0*k; dx1 = 0*k; dy1 = 0*k;
+
     ui->hsBox->setValue(hs); ui->hBox->setValue(h); ui->tsBox->setValue(ts);
     ui->cxBox->setValue(cx); ui->cyBox->setValue(cy); ui->cx1Box->setValue(cx1); ui->cy1Box->setValue(cy1);
     ui->cuxBox->setValue(cux); ui->cuyBox->setValue(cuy); ui->cux1Box->setValue(cux1); ui->cuy1Box->setValue(cuy1);
     ui->tdinBox->setValue(tdin); ui->tdin2Box->setValue(tdin2);
     ui->dxBox->setValue(dx); ui->dyBox->setValue(dy); ui->dx1Box->setValue(dx1); ui->dy1Box->setValue(dy1);
+
     writeToFile();
 }

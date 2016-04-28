@@ -78,6 +78,7 @@ private slots:
     void on_dy1Box_valueChanged(double arg1);
     void on_pauseSolveButton_clicked();
     void on_resetParamsButton_clicked();
+    void on_paramSlider_valueChanged(int value);
 };
 
 
