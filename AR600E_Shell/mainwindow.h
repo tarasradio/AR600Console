@@ -29,6 +29,7 @@ private:
     double hs, h, ts;
     double cx, cy, cx1, cy1, cux, cuy, cux1, cuy1;
     double tdin, tdin2, dx, dy, dx1, dy1;
+    double duxm, duym, duxm1, duym1;
     int PGate, IGate;
     void writeToFile();
     QUdpSocket* sender;
