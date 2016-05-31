@@ -80,6 +80,7 @@ private slots:
     void on_pauseSolveButton_clicked();
     void on_resetParamsButton_clicked();
     void on_paramSlider_valueChanged(int value);
+    void on_vSetButton_clicked();
 };
 
 
