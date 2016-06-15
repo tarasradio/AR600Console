@@ -68,7 +68,7 @@ void MainWindow::writeToFile()
     control += " " + QString::number(statePlay) + " 1";
     control += "\r\n" + QString::number(hs,'f',2) + "\r\n" + QString::number(h,'f',2) + "\r\n" + QString::number(ts,'f',2);
     control += "\r\n" + QString::number(cx,'f',6) + "\r\n" + QString::number(cy,'f',6) + "\r\n" + QString::number(cx1,'f',6) + "\r\n" + QString::number(cy1,'f',6);
-    control += "\r\n" + QString::number(cux/100,'f',8) + "\r\n" + QString::number(cuy/100,'f',8) + "\r\n" + QString::number(cux1,'f',6) + "\r\n" + QString::number(cuy1,'f',6);
+    control += "\r\n" + QString::number(cux,'f',6) + "\r\n" + QString::number(cuy,'f',6) + "\r\n" + QString::number(cux1,'f',6) + "\r\n" + QString::number(cuy1,'f',6);
     control += "\r\n" + QString::number(tdin,'f',2) + "\r\n" + QString::number(tdin2,'f',2);
     control += "\r\n" + QString::number(dx,'f',6) + "\r\n" + QString::number(dy,'f',6) + "\r\n" + QString::number(dx1,'f',6) + "\r\n" + QString::number(dy1,'f',6);
     control += "\r\n" + QString::number(duxm,'f',6) + "\r\n" + QString::number(duym,'f',6) + "\r\n" + QString::number(duxm1,'f',6) + "\r\n" + QString::number(duym1,'f',6);
