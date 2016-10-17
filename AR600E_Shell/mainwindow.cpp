@@ -20,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->v1Button->setChecked(true);
     //ui->saveParamButton->setEnabled(false);
 
+    mTimer = new myTimer();
+    connect(mTimer, SIGNAL(stopMoveSignal()), this, SLOT(onTimerStopSignal()));
+
     initParams();
     initParamTable();
 }
@@ -160,14 +163,16 @@ void MainWindow::on_accelSlider_valueChanged(int value)
     ui->accelBox->setValue(acc);
     //записать в файл
     writeToFile();
+    mTimer->startMove();
 }
 
 void MainWindow::on_stopButton_clicked()
 {
-    if(ui->accelSlider->value() == 50)
+    mTimer->stopMove();
+    /*if(ui->accelSlider->value() == 50)
         writeToFile();
     else
-        ui->accelSlider->setValue(50);
+        ui->accelSlider->setValue(50);*/
 }
 
 void MainWindow::on_angAccelSlider_valueChanged(int value)
@@ -217,7 +222,7 @@ void MainWindow::on_saveParamButton_clicked()
     writeToFile();
 }
 
-void MainWindow::on_connectButton_clicked()
+void MainWindow::on_connectButton_clicked() //TODO
 {
     //try connect
     sender = new QUdpSocket(this);
@@ -232,14 +237,15 @@ void MainWindow::on_connectButton_clicked()
     }
 }
 
-void MainWindow::on_disconnectButton_clicked()
+void MainWindow::on_disconnectButton_clicked() // TODO
 {
     //disconnect
     on_stopButton_clicked();
-    command[0] = 'C';
+    //command[0] = 'C';
     //sender->writeDatagram(command, 1, mHost, mPort);
-    if(ui->runSolveButton->isEnabled())
-        on_stopSolveButton_clicked();
+    //if(ui->runSolveButton->isEnabled())
+        //on_stopSolveButton_clicked();
+
     sender->disconnectFromHost();
     sender->close();
 
@@ -299,6 +305,9 @@ void MainWindow::on_runSolveButton_clicked()
     writeToFile();
     command[0] = '1';
     sender->writeDatagram(command, 1, mHost, mPort);
+
+    mTimer->setTimePointStop(25000);
+    mTimer->startCount();
 }
 
 void MainWindow::on_stopSolveButton_clicked()
@@ -316,6 +325,8 @@ void MainWindow::on_stopSolveButton_clicked()
     Sleep(500);
     statePlay = 0;
     writeToFile();
+
+    mTimer->stopCount();
 }
 
 void MainWindow::on_manStdCheckBox_clicked(bool checked)
@@ -346,7 +357,7 @@ void MainWindow::on_v1Button_clicked()
 
 void MainWindow::on_v2Button_clicked()
 {
-    vmax = 0.010; //0.024;
+    vmax = 0.010; // 0.024;
     ui->v1Button->setChecked(false);
     ui->v3Button->setChecked(false);
     writeToFile();
@@ -367,6 +378,14 @@ void MainWindow::on_vSetButton_clicked()
     ui->v2Button->setChecked(false);
     ui->v3Button->setChecked(false);
     writeToFile();
+}
+
+void MainWindow::onTimerStopSignal()
+{
+    if(ui->accelSlider->value() == 50)
+            writeToFile();
+        else
+            ui->accelSlider->setValue(50);
 }
 
 void MainWindow::on_rebootButton_clicked()

@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QUdpSocket>
 #include <windows.h>
+#include "myTimer.h"
 
 #define mHost QHostAddress::LocalHost
 #define mPort 55555
@@ -37,6 +38,7 @@ private:
     void resetControl();
     void initParams();
     void initParamTable();
+    myTimer *mTimer;
 
 private slots:
     void on_paramCheckBox_clicked(bool checked);
@@ -81,6 +83,8 @@ private slots:
     void on_resetParamsButton_clicked();
     void on_paramSlider_valueChanged(int value);
     void on_vSetButton_clicked();
+
+    void onTimerStopSignal();
 };
 
 
