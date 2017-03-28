@@ -6,6 +6,7 @@
 #include <QUdpSocket>
 #include <windows.h>
 #include "myTimer.h"
+#include "audiosocket.h"
 
 #define mHost QHostAddress::LocalHost
 #define mPort 55555
@@ -39,6 +40,8 @@ private:
     void initParams();
     void initParamTable();
     myTimer *mTimer;
+
+    AudioSocket* mAudioSocket;
 
 private slots:
     void on_paramCheckBox_clicked(bool checked);
@@ -85,6 +88,7 @@ private slots:
     void on_vSetButton_clicked();
 
     void onTimerStopSignal();
+    void on_playAudioButton_clicked();
 };
 
 
