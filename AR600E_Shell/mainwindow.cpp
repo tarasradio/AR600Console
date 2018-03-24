@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initParams();
     initParamTable();
+
+    on_refreshComsButton_clicked();
+    connect(&pult, SIGNAL(dataReceived(QByteArray)), this, SLOT(on_pult_dataReceived(QByteArray)));
 }
 
 MainWindow::~MainWindow()
@@ -580,4 +583,29 @@ void MainWindow::on_paramSlider_valueChanged(int value)
 void MainWindow::on_playAudioButton_clicked()
 {
     mAudioSocket->playFile(ui->audiofileInput->text());
+}
+
+void MainWindow::on_refreshComsButton_clicked()
+{
+    ui->comsComboBox->clear();
+    ui->comsComboBox->addItems(pult.GetComPortsList());
+}
+
+void MainWindow::on_connectPultButton_clicked()
+{
+    if(pult.OpenPort(ui->comsComboBox->currentText()))
+        ui->pultStatusLabel->setText("Пульт подключен");
+    else
+        ui->pultStatusLabel->setText("Пульт не подключен");
+}
+
+void MainWindow::on_disconnectPultButton_clicked()
+{
+    pult.ClosePort();
+    ui->pultStatusLabel->setText("Пульт не подключен");
+}
+
+void MainWindow::on_pult_dataReceived(QByteArray data)
+{
+    ui->pultDataEdit->setText(data);
 }

@@ -7,6 +7,7 @@
 #include <windows.h>
 #include "myTimer.h"
 #include "audiosocket.h"
+#include "pultreceiver.h"
 
 #define mHost QHostAddress::LocalHost
 #define mPort 55555
@@ -42,6 +43,8 @@ private:
     myTimer *mTimer;
 
     AudioSocket* mAudioSocket;
+
+    PultReceiver pult;
 
 private slots:
     void on_paramCheckBox_clicked(bool checked);
@@ -89,6 +92,11 @@ private slots:
 
     void onTimerStopSignal();
     void on_playAudioButton_clicked();
+
+    void on_refreshComsButton_clicked();
+    void on_connectPultButton_clicked();
+    void on_disconnectPultButton_clicked();
+    void on_pult_dataReceived(QByteArray data);
 };
 
 

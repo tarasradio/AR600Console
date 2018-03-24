@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>977</width>
+    <width>978</width>
     <height>753</height>
    </rect>
   </property>
@@ -1413,6 +1413,91 @@
        </property>
       </widget>
      </widget>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="geometry">
+       <rect>
+        <x>580</x>
+        <y>270</y>
+        <width>331</width>
+        <height>231</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Работа с пульта</string>
+      </property>
+      <widget class="QComboBox" name="comsComboBox">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>40</y>
+         <width>91</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="refreshComsButton">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>40</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Обновить</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="connectPultButton">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>90</y>
+         <width>91</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Подключить</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="disconnectPultButton">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>90</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Отключить</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="pultStatusLabel">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>130</y>
+         <width>121</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Пульт не подключен</string>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="pultDataEdit">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>150</y>
+         <width>301</width>
+         <height>71</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
     </widget>
     <widget class="QCheckBox" name="manStdCheckBox">
      <property name="geometry">
@@ -1692,7 +1777,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>977</width>
+     <width>978</width>
      <height>21</height>
     </rect>
    </property>
