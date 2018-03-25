@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initParamTable();
 
     on_refreshComsButton_clicked();
-    connect(&pult, SIGNAL(dataReceived(QByteArray)), this, SLOT(on_pult_dataReceived(QByteArray)));
+    connect(&pult, SIGNAL(dataReceived(QByteArray)), this, SLOT(pultDataReceived(QByteArray)));
 }
 
 MainWindow::~MainWindow()
@@ -605,7 +605,7 @@ void MainWindow::on_disconnectPultButton_clicked()
     ui->pultStatusLabel->setText("Пульт не подключен");
 }
 
-void MainWindow::on_pult_dataReceived(QByteArray data)
+void MainWindow::pultDataReceived(QByteArray data)
 {
-    ui->pultDataEdit->setText(data);
+    ui->pultDataEdit->append(data + " ");
 }

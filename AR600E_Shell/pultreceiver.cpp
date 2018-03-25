@@ -2,6 +2,7 @@
 
 PultReceiver::PultReceiver(QObject *parent) : QObject(parent)
 {
+    initPort();
     connect(&port, SIGNAL(readyRead()), this, SLOT(onReceivedData()));
 }
 
@@ -27,6 +28,30 @@ void PultReceiver::initPort()
     port.setParity(QSerialPort::NoParity);
 }
 
+unsigned short* PultReceiver::processPultData(QByteArray pultData)
+{
+    //TODO: переписать по нормальному, добавить перевод в скорости
+    // для выставления на GUI и отправки фрунду
+
+    int dataSize = pultData.size();
+    char *data = pultData.data();
+    unsigned short results[6] = { 0 };
+    unsigned short velocityX, velocityY;
+    if(dataSize == 32)
+    {
+        if(data[0] == 0x20 && data[1] == 0x40)
+        {
+            velocityX = *((unsigned short*)(data + 2));
+            velocityY = *((unsigned short*)(data + 2));
+            memcpy(results, data + 2, 4);
+        }
+    }
+
+    //TODO: добавить packetBuilder и сигнал по окончанию приема пакета
+
+    return results;
+}
+
 void PultReceiver::onReceivedData()
 {
     QByteArray data;
@@ -34,6 +59,7 @@ void PultReceiver::onReceivedData()
 
     //TODO: добавить обработку сообщений, возможно с помощью
     // packetBuilder
+    //unsigned short *pultData = processPultData(data);
 
     dataReceived(data);
 }

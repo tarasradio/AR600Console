@@ -3,3 +3,5 @@ build*
 
 # User-specific QT Creator files
 *.pro.user*
+*.user
+AR600E_Shell/AR600E_Shell.pro.user

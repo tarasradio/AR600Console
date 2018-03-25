@@ -21,6 +21,7 @@ private:
     QSerialPort port;
 
     void initPort();
+    unsigned short* processPultData(QByteArray pultData);
 
 private slots:
     void onReceivedData();

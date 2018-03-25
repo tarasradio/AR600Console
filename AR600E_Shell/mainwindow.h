@@ -96,7 +96,9 @@ private slots:
     void on_refreshComsButton_clicked();
     void on_connectPultButton_clicked();
     void on_disconnectPultButton_clicked();
-    void on_pult_dataReceived(QByteArray data);
+    void pultDataReceived(QByteArray data);
+
+    //TODO: добавить слот обработки пакета от пульта
 };
 
 
