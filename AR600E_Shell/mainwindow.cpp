@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->paramCheckBox->setChecked(true);
+    ui->paramCheckBox->setChecked(false);
     ui->parametersBox->setEnabled(false);
     ui->disconnectButton->setEnabled(false);
     ui->controlBox->setEnabled(false);
@@ -17,14 +17,35 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->angAccGroup->setEnabled(false);
     ui->pauseSolveButton->setEnabled(false);
     ui->stopSolveButton->setEnabled(false);
-    ui->v1Button->setChecked(true);
+    //ui->v1Button->setChecked(true);
     //ui->saveParamButton->setEnabled(false);
 
     mTimer = new myTimer();
     connect(mTimer, SIGNAL(stopMoveSignal()), this, SLOT(onTimerStopSignal()));
 
+    mAudioSocket = new AudioSocket();
+    mAudioCommandReceiver = new AudioCommandReceiver();
+    // соединение сигналов от команд
+    connect(mAudioCommandReceiver, SIGNAL(moveForward()), this, SLOT(on_runSolveButton_clicked()));
+    connect(mAudioCommandReceiver, SIGNAL(stopSolve()), this, SLOT(on_stopSolveButton_clicked()));
+    connect(mAudioCommandReceiver, SIGNAL(stopMove()), this, SLOT(onStopAudioCommand_received()));
+
     initParams();
     initParamTable();
+
+    /*sockaddr_in si_other;
+    SOCKET s;
+
+    s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    memset((char*) &si_other, 0, sizeof(si_other));
+    si_other.sin_family = AF_INET;
+    si_other.sin_port=htons(12833);
+    inet_aton("192.168.1.11", &si_other.sin_addr);
+
+    char buffer[]={1,2,3,4,5,6,7,8};
+
+    send(s, buffer, sizeof(buffer));*/
 }
 
 MainWindow::~MainWindow()
@@ -35,15 +56,28 @@ MainWindow::~MainWindow()
 void MainWindow::initParams()
 {
     acc = 0; angAcc = 0;
-    vmax = 0.005; //0.017;
+    vmax = 0.010;
     statePlay = 0;
     hs = 0.1; h = 0.2; ts = 5.0;
-    cx = -0.00002; cy = 0.00002; cx1 = 0.00002; cy1 = -0.00002;
+    /*cx = -0.00002; cy = 0.00002; cx1 = 0.00002; cy1 = -0.00002;
     cux = 0.00005; cuy = -0.000025; cux1 = 0.00005; cuy1 = 0.00002;
     tdin = 0.4; tdin2 = 0.4;
     dx = 0; dy = 0; dx1 = 0; dy1 = 0;
     duxm = 0; duym = 0; duxm1 = 0; duym1 = 0;
-    PGate = 1200; IGate = 1;
+    PGate = 1200; IGate = 1;*/
+
+    cx = 0; cy = 0; cx1 = 0; cy1 = 0;
+    cux = 0; cuy = 0; cux1 = 0; cuy1 = 0;
+    tdin = 0; tdin2 = 0;
+    dx = 0; dy = 0; dx1 = 0; dy1 = 0;
+    duxm = 0; duym = 0; duxm1 = 0; duym1 = 0;
+    ui->hsBox->setValue(hs); ui->hBox->setValue(h); ui->tsBox->setValue(ts);
+    ui->cxBox->setValue(cx); ui->cyBox->setValue(cy); ui->cx1Box->setValue(cx1); ui->cy1Box->setValue(cy1);
+    ui->cuxBox->setValue(cux); ui->cuyBox->setValue(cuy); ui->cux1Box->setValue(cux1); ui->cuy1Box->setValue(cuy1);
+    ui->tdinBox->setValue(tdin); ui->tdin2Box->setValue(tdin2);
+    ui->dxBox->setValue(dx); ui->dyBox->setValue(dy); ui->dx1Box->setValue(dx1); ui->dy1Box->setValue(dy1);
+    ui->duxmBox->setValue(duxm); ui->duymBox->setValue(duym); ui->duxm1Box->setValue(duxm1); ui->duym1Box->setValue(duym1);
+
     ui->cxBox->setToolTip("cx - коэффициент обратной связи по продольному смещению центра масс относительно левой ноги в фазе опоры	+-0.00004	номинальное значение -0.00002");
     ui->cyBox->setToolTip("cy - коэффициент обратной связи по поперечному смещению центра масс относительно левой ноги в фазе опоры	+-0.00008	номинальное значение +0.00002");
     ui->cx1Box->setToolTip("cx1 - коэффициент обратной связи по продольному смещению центра масс относительно правой ноги в фазе опоры	+-0.00004	номинальное значение +0.00002");
@@ -62,6 +96,7 @@ void MainWindow::initParams()
     ui->duymBox->setToolTip("duym - коэффициент обратной связи по поперечному углу левой стопы контура обратной связи по реактивному моменту		0 - 1");
     ui->duxm1Box->setToolTip("duxm1 - коэффициент обратной связи по продольному углу правой стопы контура обратной связи по реактивному моменту	0 - 1");
     ui->duym1Box->setToolTip("duym1 - коэффициент обратной связи по поперечному углу правой стопы контура обратной связи по реактивному моменту	0 - 1");
+
 }
 
 void MainWindow::writeToFile()
@@ -166,9 +201,16 @@ void MainWindow::on_accelSlider_valueChanged(int value)
     mTimer->startMove();
 }
 
+void MainWindow::onStopAudioCommand_received()
+{
+    on_stopButton_clicked();
+    mAudioSocket->playText("Впереди препятствие. Останавливаюсь");
+}
+
 void MainWindow::on_stopButton_clicked()
 {
-    mTimer->stopMove();
+    onTimerStopSignal();
+    //mTimer->stopMove();
     /*if(ui->accelSlider->value() == 50)
         writeToFile();
     else
@@ -235,6 +277,12 @@ void MainWindow::on_connectButton_clicked() //TODO
         ui->disconnectButton->setEnabled(true);
         ui->connectButton->setEnabled(false);
     }
+
+    mAudioCommandReceiver->Connect();
+    if(mAudioSocket->connect())
+        ui->audioGroupBox->setEnabled(true);
+    else
+        ui->audioGroupBox->setEnabled(false);
 }
 
 void MainWindow::on_disconnectButton_clicked() // TODO
@@ -252,6 +300,10 @@ void MainWindow::on_disconnectButton_clicked() // TODO
     ui->controlBox->setEnabled(false);
     ui->disconnectButton->setEnabled(false);
     ui->connectButton->setEnabled(true);
+
+    mAudioSocket->disconnect();
+    mAudioCommandReceiver->Disconnect();
+    ui->audioGroupBox->setEnabled(false);
 }
 
 void MainWindow::on_forwardButton_clicked()
@@ -306,7 +358,7 @@ void MainWindow::on_runSolveButton_clicked()
     command[0] = '1';
     sender->writeDatagram(command, 1, mHost, mPort);
 
-    mTimer->setTimePointStop(25000);
+    mTimer->setTimePointStop(STOP_PERIOD);
     mTimer->startCount();
 }
 
@@ -383,9 +435,9 @@ void MainWindow::on_vSetButton_clicked()
 void MainWindow::onTimerStopSignal()
 {
     if(ui->accelSlider->value() == 50)
-            writeToFile();
-        else
-            ui->accelSlider->setValue(50);
+        writeToFile();
+    else
+        ui->accelSlider->setValue(50);
 }
 
 void MainWindow::on_rebootButton_clicked()
@@ -507,10 +559,10 @@ void MainWindow::on_pauseSolveButton_clicked()
 
 void MainWindow::on_resetParamsButton_clicked()
 {
-    if(ui->paramSlider->value() != 0)
+    /*if(ui->paramSlider->value() != 0)
         ui->paramSlider->setValue(0);
     else
-    {
+    {*/
         //writeToFile();
 
         //hs = 0; h = 0; ts = 0;
@@ -526,7 +578,7 @@ void MainWindow::on_resetParamsButton_clicked()
         ui->dxBox->setValue(dx); ui->dyBox->setValue(dy); ui->dx1Box->setValue(dx1); ui->dy1Box->setValue(dy1);
         ui->duxmBox->setValue(duxm); ui->duymBox->setValue(duym); ui->duxm1Box->setValue(duxm1); ui->duym1Box->setValue(duym1);
         writeToFile();
-    }
+    //}
 
 }
 
@@ -551,4 +603,24 @@ void MainWindow::on_paramSlider_valueChanged(int value)
     ui->duxmBox->setValue(duxm); ui->duymBox->setValue(duym); ui->duxm1Box->setValue(duxm1); ui->duym1Box->setValue(duym1);
 
     writeToFile();
+}
+
+void MainWindow::on_playAudioButton_clicked()
+{
+    mAudioSocket->playText(ui->audiofileInput->text());
+}
+
+void MainWindow::on_playFileButton_clicked()
+{
+    QString data;
+    QString filename = QFileDialog::getOpenFileName(this, QString::fromUtf8("Открыть файл"), QDir::currentPath(), "Text (*.txt)");
+    QFile file(filename);
+    if(file.exists())
+    {
+        if(file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            data = QString::fromUtf8(file.readAll());
+            mAudioSocket->playText(data);
+        }
+    }
 }

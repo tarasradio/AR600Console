@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QTime>
 
+#define STOP_PERIOD 25000
 
 class myTimer : public QThread
 {

@@ -15,21 +15,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    Transiver.cpp \
-    SettingStorage.cpp \
-    Dispatcher.cpp \
-    Packet.cpp \
-    PacketManager.cpp \
-    Parameter.cpp \
-    myTimer.cpp
+        myTimer.cpp \
+    audiosocket.cpp \
+    audiocommandreceiver.cpp
 
 HEADERS  += mainwindow.h \
-    Transiver.h \
-    SettingStorage.h \
-    Dispatcher.h \
-    Packet.h \
-    PacketManager.h \
-    Parameter.h \
-    myTimer.h
+    myTimer.h \
+    audiosocket.h \
+    audiocommandreceiver.h
 
 FORMS    += mainwindow.ui
+
+LIBS += -lws2_32

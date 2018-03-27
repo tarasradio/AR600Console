@@ -70,12 +70,13 @@ void myTimer::startMove()
 void myTimer::Count()
 {
     curTime += m_delay;
-    if(curTime == timePointStop)
+
+    /*if(curTime == timePointStop)
     {
         //curTime = 0;
         timePointStop += timePointStep;
         if(mState == STOPPING)
             stopMoveSignal();
-    }
+    }*/
 }
 
