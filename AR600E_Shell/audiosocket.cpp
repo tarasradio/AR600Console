@@ -30,3 +30,8 @@ void AudioSocket::playText(QString text)
     aserver->writeDatagram(text.toUtf8(), aHost, aPort);
 }
 
+void AudioSocket::playFile(QString filename)
+{
+    aserver->write((filename + "<EOF>").toUtf8());
+}
+

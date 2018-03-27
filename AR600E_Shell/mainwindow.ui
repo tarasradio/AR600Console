@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>979</width>
+    <width>978</width>
     <height>753</height>
    </rect>
   </property>
@@ -1411,18 +1411,103 @@
        <property name="text">
         <string>Воспроизвести текст</string>
        </property>
+       </widget>
+       <widget class="QPushButton" name="playFileButton">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>50</y>
+          <width>171</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Воспроизвести файл</string>
+        </property>
+       </widget>
       </widget>
-      <widget class="QPushButton" name="playFileButton">
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="geometry">
+       <rect>
+        <x>580</x>
+        <y>270</y>
+        <width>331</width>
+        <height>231</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Работа с пульта</string>
+      </property>
+      <widget class="QComboBox" name="comsComboBox">
        <property name="geometry">
         <rect>
-         <x>60</x>
-         <y>50</y>
-         <width>171</width>
+         <x>30</x>
+         <y>40</y>
+         <width>91</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="refreshComsButton">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>40</y>
+         <width>75</width>
          <height>23</height>
         </rect>
        </property>
        <property name="text">
-        <string>Воспроизвести файл</string>
+        <string>Обновить</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="connectPultButton">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>90</y>
+         <width>91</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Подключить</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="disconnectPultButton">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>90</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Отключить</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="pultStatusLabel">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>130</y>
+         <width>121</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Пульт не подключен</string>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="pultDataEdit">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>150</y>
+         <width>301</width>
+         <height>71</height>
+        </rect>
        </property>
       </widget>
      </widget>
@@ -1549,8 +1634,8 @@
      <rect>
       <x>1030</x>
       <y>540</y>
-      <width>291</width>
-      <height>131</height>
+      <width>41</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="title">
@@ -1627,8 +1712,8 @@
      <rect>
       <x>1010</x>
       <y>460</y>
-      <width>261</width>
-      <height>71</height>
+      <width>141</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="title">
@@ -1705,7 +1790,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>979</width>
+     <width>978</width>
      <height>21</height>
     </rect>
    </property>

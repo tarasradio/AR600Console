@@ -9,6 +9,7 @@
 #include "myTimer.h"
 #include "audiosocket.h"
 #include "audiocommandreceiver.h"
+#include "pultreceiver.h"
 
 #define mHost QHostAddress::LocalHost
 #define mPort 55555
@@ -46,6 +47,7 @@ private:
     AudioSocket* mAudioSocket;
     AudioCommandReceiver* mAudioCommandReceiver;
 
+    PultReceiver pult;
 
 private slots:
     void on_paramCheckBox_clicked(bool checked);
@@ -95,6 +97,13 @@ private slots:
     void on_playAudioButton_clicked();
     void on_playFileButton_clicked();
     void onStopAudioCommand_received();
+
+    void on_refreshComsButton_clicked();
+    void on_connectPultButton_clicked();
+    void on_disconnectPultButton_clicked();
+    void pultDataReceived(QByteArray data);
+
+    //TODO: добавить слот обработки пакета от пульта
 };
 
 

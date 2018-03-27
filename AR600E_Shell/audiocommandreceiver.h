@@ -5,7 +5,7 @@
 #include <QThread>
 #include <QUdpSocket>
 #include <QDebug>
-#include <winsock2.h>
+//#include <winsock2.h>
 //#include <windows.h>
 
 class AudioCommandReceiver : public QThread

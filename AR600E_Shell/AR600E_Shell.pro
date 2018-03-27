@@ -4,10 +4,14 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 QT += network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4):
+{
+    QT += widgets
+    QT += serialport
+}
 
 TARGET = AR600E_Shell
 TEMPLATE = app
@@ -17,12 +21,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
         myTimer.cpp \
     audiosocket.cpp \
-    audiocommandreceiver.cpp
+    audiocommandreceiver.cpp \
+    pultreceiver.cpp
 
 HEADERS  += mainwindow.h \
     myTimer.h \
     audiosocket.h \
-    audiocommandreceiver.h
+    audiocommandreceiver.h \
+    pultreceiver.h
 
 FORMS    += mainwindow.ui
 

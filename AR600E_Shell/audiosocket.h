@@ -11,8 +11,9 @@ class AudioSocket
 public:
     AudioSocket();
     bool connect();
-    void disconnect();
+    void disconnect();	
     void playText(QString text);
+    void playFile(QString filename);
 
 private:
     //QTcpSocket* aserver;
