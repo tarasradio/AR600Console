@@ -3,7 +3,12 @@
 PultReceiver::PultReceiver(QObject *parent) : QObject(parent)
 {
     initPort();
+
+    packageBuilder = new PackageBuilder(QByteArray(header), packageLength);
+    pultChannels.clear();
+
     connect(&port, SIGNAL(readyRead()), this, SLOT(onReceivedData()));
+    connect(packageBuilder, SIGNAL(packageReceived(QByteArray)), this, SLOT(onReceivedPackage(QByteArray)));
 }
 
 PultReceiver::~PultReceiver()
@@ -28,40 +33,28 @@ void PultReceiver::initPort()
     port.setParity(QSerialPort::NoParity);
 }
 
-unsigned short* PultReceiver::processPultData(QByteArray pultData)
-{
-    //TODO: переписать по нормальному, добавить перевод в скорости
-    // для выставления на GUI и отправки фрунду
-
-    int dataSize = pultData.size();
-    char *data = pultData.data();
-    unsigned short results[6] = { 0 };
-    unsigned short velocityX, velocityY;
-    if(dataSize == 32)
-    {
-        if(data[0] == 0x20 && data[1] == 0x40)
-        {
-            velocityX = *((unsigned short*)(data + 2));
-            velocityY = *((unsigned short*)(data + 2));
-            memcpy(results, data + 2, 4);
-        }
-    }
-
-    //TODO: добавить packetBuilder и сигнал по окончанию приема пакета
-
-    return results;
-}
-
 void PultReceiver::onReceivedData()
 {
     QByteArray data;
     data.append(port.readAll());
 
-    //TODO: добавить обработку сообщений, возможно с помощью
-    // packetBuilder
-    //unsigned short *pultData = processPultData(data);
+    packageBuilder->processPart(data);
 
     dataReceived(data);
+}
+
+void PultReceiver::onReceivedPackage(QByteArray package)
+{
+    int channels = (package.size() - 2) / 2;
+    pultChannels.clear();
+
+    for(int i = 0; i < channels; i++)
+    {
+        short value = *((short*)(package.data() + i*2));
+        pultChannels.append(value);
+    }
+
+    //packageReceived(pultChannels);
 }
 
 bool PultReceiver::OpenPort(QString portName)
@@ -75,7 +68,7 @@ bool PultReceiver::OpenPort(QString portName)
 
 void PultReceiver::ClosePort()
 {
-    //TODO: добавить сигналирование главному окну
     port.close();
+    portClosed();
 }
 

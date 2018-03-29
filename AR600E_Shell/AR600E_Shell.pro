@@ -22,13 +22,15 @@ SOURCES += main.cpp\
         myTimer.cpp \
     audiosocket.cpp \
     audiocommandreceiver.cpp \
-    pultreceiver.cpp
+    pultreceiver.cpp \
+    PackageBuilder.cpp
 
 HEADERS  += mainwindow.h \
     myTimer.h \
     audiosocket.h \
     audiocommandreceiver.h \
-    pultreceiver.h
+    pultreceiver.h \
+    PackageBuilder.h
 
 FORMS    += mainwindow.ui
 

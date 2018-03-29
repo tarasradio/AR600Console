@@ -5,6 +5,7 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QtSerialPort/QSerialPort>
 #include <QString>
+#include "PackageBuilder.h"
 
 class PultReceiver : public QObject
 {
@@ -19,15 +20,21 @@ public:
 
 private:
     QSerialPort port;
+    PackageBuilder *packageBuilder;
+    char header[2] = { 0x20, 0x40 };
+    int packageLength = 32;
+    QList<short> pultChannels;
 
     void initPort();
-    unsigned short* processPultData(QByteArray pultData);
 
 private slots:
     void onReceivedData();
+    void onReceivedPackage(QByteArray package);
 
 signals:
     void dataReceived(QByteArray data);
+    void packageReceived(QList<short> pultData);
+    void portClosed();
 };
 
 #endif // PULTRECEIVER_H

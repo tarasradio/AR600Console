@@ -48,7 +48,9 @@ MainWindow::MainWindow(QWidget *parent) :
     send(s, buffer, sizeof(buffer));*/
 	
     on_refreshComsButton_clicked();
-    connect(&pult, SIGNAL(dataReceived(QByteArray)), this, SLOT(pultDataReceived(QByteArray)));
+    connect(&pult, SIGNAL(portClosed()), this, SLOT(pultPortClosed()));
+    //connect(&pult, SIGNAL(dataReceived(QByteArray)), this, SLOT(pultDataReceived(QByteArray)));
+    connect(&pult, SIGNAL(packageReceived(QList<short>)), this, SLOT(pultPacketReceived(QList<short>)));
 }
 
 MainWindow::~MainWindow()
@@ -646,10 +648,26 @@ void MainWindow::on_connectPultButton_clicked()
 void MainWindow::on_disconnectPultButton_clicked()
 {
     pult.ClosePort();
+}
+
+void MainWindow::pultPortClosed()
+{
     ui->pultStatusLabel->setText("Пульт не подключен");
 }
 
 void MainWindow::pultDataReceived(QByteArray data)
 {
     ui->pultDataEdit->append(data + " ");
+}
+
+void MainWindow::pultPacketReceived(QList<short> packet)
+{
+    QString pultData;
+    for(int i = 0; i < packet.size(); i++)
+        pultData += QString::number(packet[i]) + " ";
+
+    ui->pultDataEdit->append("\n" + pultData);
+
+    ui->accelSlider->setValue((packet[2] - 1000) / 10);
+    ui->angAccelSlider->setValue((packet[3] - 1000) / 10);
 }
